@@ -1,0 +1,95 @@
+import * as service from "./auth.service.js";
+import { signupSchema, signinSchema } from "./auth.validation.js";
+import { setCookies } from "../../utils/cookie.js";
+import { updateMeSchema } from "./auth.validation.js";
+
+export const signup = async (req, res) => {
+    try {
+        const data = signupSchema.parse(req.body);
+
+        const result = await service.signup(data);
+
+        setCookies(res, result);
+
+        res.status(201).json({ user: result.user });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
+export const signin = async (req, res) => {
+    try {
+        const data = signinSchema.parse(req.body);
+
+        const result = await service.signin(data);
+
+        setCookies(res, result);
+
+        res.json({ user: result.user });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
+// REFRESH
+export const refresh = async (req, res) => {
+    try {
+        const token = req.cookies.refresh_token || req.headers["x-refresh-token"];
+
+        const result = await service.refreshToken(token);
+
+        setCookies(res, result);
+
+        res.json({ accessToken: result.accessToken });
+    } catch (err) {
+        res.status(403).json({ message: err.message });
+    }
+};
+
+// ME
+export const me = async (req, res) => {
+    try {
+        const id = req.user.id;
+
+        const user = await service.getUser(id);
+
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// UPDATE ME
+export const updateMe = async (req, res) => {
+    try {
+        const data = updateMeSchema.parse(req.body);
+
+        const userId = req.user.id;
+
+        const updatedUser = await service.updateMe(userId, data);
+
+        res.json(updatedUser);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
+// REMOVE SESSION (LOGOUT)
+export const removeSession = async (req, res) => {
+    try {
+        const refreshToken =
+            req.cookies.refresh_token || req.headers["x-refresh-token"];
+
+        const all = req.query.all === "true"; // optional
+
+        await service.removeSession(refreshToken, req.user.id, all);
+
+        // clear cookies
+        res.clearCookie("access_token");
+        res.clearCookie("refresh_token");
+
+        res.json({ message: "Logged out successfully" });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};

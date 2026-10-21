@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import menuRoutes from './modules/menu/menu.routes.js'
 import cors from 'cors'
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 dotenv.config()
 
 
@@ -11,12 +12,13 @@ const PORT = process.env.PORT || 8000
 
 app.use(cors({
     origin: 'localhost:5173',
+    allowedHeaders: ["Authorization", "Content-Type"],
     credentials: true,
-    methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE']
+    methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE', 'OPTIONS']
 }))
 
 app.use(helmet())
-
+app.use(cookieParser())
 // Batasi Backend agar tidak bisa diakses oleh Postman
 // app.use((req, res, next) => {
 //     const userAgent = req.headers['user-agent'] || '';
@@ -47,6 +49,9 @@ app.get('/example', (req, res) => {
 // Menu Route
 // Middleware untuk wrapping route
 app.use('/api/v1/menu', menuRoutes)
+
+import authRoutes from './modules/auth/auth.routes.js'
+app.use('/api/v1/auth', authRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT} http://localhost:${PORT}`);

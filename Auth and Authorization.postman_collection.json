@@ -1,0 +1,311 @@
+{
+  "info": {
+    "_postman_id": "1c77c6aa-cf4d-4c6f-a6e3-b575ade25d92",
+    "name": "Auth and Authorization",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "33041331",
+    "_collection_link": "https://go.postman.co/collection/33041331-1c77c6aa-cf4d-4c6f-a6e3-b575ade25d92?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Signup",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Signup success\", () => {\r\n  pm.response.to.have.status(201);\r\n});\r\n\r\nconst res = pm.response.json();\r\n\r\n// save user\r\npm.environment.set(\"user_id\", res.user.id);\r\npm.environment.set(\"user_email\", res.user.email);\r\npm.environment.set(\"user_role\", res.user.role);\r\n\r\n// save cookies (fallback manual)\r\nconst cookies = pm.cookies.toObject();\r\n\r\nif (cookies.access_token) {\r\n  pm.environment.set(\"access_token\", cookies.access_token);\r\n}\r\n\r\nif (cookies.refresh_token) {\r\n  pm.environment.set(\"refresh_token\", cookies.refresh_token);\r\n}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"John Doe\",\r\n  \"email\": \"john@example.com\",\r\n  \"password\": \"123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/local/signup",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "local",
+            "signup"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Signin",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Signin success\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\nconst cookies = pm.cookies.toObject();\r\n\r\npm.environment.set(\"access_token\", cookies.access_token);\r\npm.environment.set(\"refresh_token\", cookies.refresh_token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"john@example.com\",\r\n  \"password\": \"123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/local/signin",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "local",
+            "signin"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "User Data",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Get current user\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\nconst res = pm.response.json();\r\n\r\npm.expect(res).to.have.property(\"id\");\r\npm.expect(res).to.have.property(\"email\");\r\npm.expect(res).to.have.property(\"role\");\r\n\r\n// sync env\r\npm.environment.set(\"user_id\", res.id);\r\npm.environment.set(\"user_email\", res.email);\r\npm.environment.set(\"user_role\", res.role);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Mie Kuah\",\r\n    \"description\": \"Mie Kuah\",\r\n    \"price\": 5000,\r\n    \"is_available\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/user/me",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "user",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update User Data",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Update success\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\nconst res = pm.response.json();\r\n\r\npm.expect(res.email).to.eql(\"john_updated@example.com\");\r\n\r\n// update env\r\npm.environment.set(\"user_email\", res.email);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"John Updated\",\r\n  \"email\": \"john_updated@example.com\",\r\n  \"password\": \"123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/user/me",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "user",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Ambil Refresh Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Refresh success\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\nconst cookies = pm.cookies.toObject();\r\n\r\n// rotation → token berubah\r\nif (cookies.access_token) {\r\n  pm.environment.set(\"access_token\", cookies.access_token);\r\n}\r\n\r\nif (cookies.refresh_token) {\r\n  pm.environment.set(\"refresh_token\", cookies.refresh_token);\r\n}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/auth/refresh-token",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "refresh-token"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Logout",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Logout success\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\n// clear env\r\npm.environment.unset(\"access_token\");\r\npm.environment.unset(\"refresh_token\");"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/auth/remove-session",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "remove-session"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Logout semua perangkat",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Logout all success\", () => {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\npm.environment.unset(\"access_token\");\r\npm.environment.unset(\"refresh_token\");"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/auth/remove-session?all=true",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "remove-session"
+          ],
+          "query": [
+            {
+              "key": "all",
+              "value": "true"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// attach access token otomatis jika ada\r",
+          "if (pm.environment.get(\"access_token\")) {\r",
+          "  pm.request.headers.add({\r",
+          "    key: \"Authorization\",\r",
+          "    value: \"Bearer \" + pm.environment.get(\"access_token\"),\r",
+          "  });\r",
+          "}\r",
+          "\r",
+          "// fallback refresh token header\r",
+          "if (pm.environment.get(\"refresh_token\")) {\r",
+          "  pm.request.headers.add({\r",
+          "    key: \"x-refresh-token\",\r",
+          "    value: pm.environment.get(\"refresh_token\"),\r",
+          "  });\r",
+          "}"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "refresh_token",
+      "value": ""
+    },
+    {
+      "key": "user_id",
+      "value": ""
+    },
+    {
+      "key": "user_email",
+      "value": ""
+    },
+    {
+      "key": "user_role",
+      "value": ""
+    }
+  ]
+}

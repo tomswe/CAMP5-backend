@@ -1,0 +1,182 @@
+{
+  "info": {
+    "_postman_id": "76027786-1419-485f-8f0b-f78eccaca011",
+    "name": "backend camp5",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "33041331",
+    "_collection_link": "https://go.postman.co/collection/33041331-76027786-1419-485f-8f0b-f78eccaca011?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "POST Menu",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code adalah 201 atau 200 (Created/Success)\", function () {\r\n    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r\n});\r\n\r\n// Menyimpan ID otomatis ke environment variable 'menu_id'\r\nvar jsonData = pm.response.json();\r\n// Sesuaikan path 'jsonData.id' dengan struktur JSON dari backend Anda\r\nif (jsonData.id) {\r\n    pm.environment.set(\"menu_id\", jsonData.id);\r\n    console.log(\"ID Menu tersimpan: \" + jsonData.id);\r\n} else if (jsonData.data && jsonData.data.id) {\r\n    pm.environment.set(\"menu_id\", jsonData.data.id);\r\n    console.log(\"ID Menu tersimpan: \" + jsonData.data.id);\r\n}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Mie Kuah\",\r\n    \"description\": \"Mie Kuah\",\r\n    \"price\": 5000,\r\n    \"is_available\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/menu",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "menu"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET By ID Menu",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code adalah 200 (Success GET by ID)\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Data yang dikembalikan sesuai dengan ID yang tersimpan\", function () {\r\n    var jsonData = pm.response.json();\r\n    \r\n    // Menyesuaikan struktur JSON respons backend (misal: jsonData.id atau jsonData.data.id)\r\n    var returnedId = jsonData.id || (jsonData.data ? jsonData.data.id : null);\r\n    var savedId = pm.environment.get(\"menu_id\");\r\n    \r\n    if (returnedId) {\r\n        pm.expect(String(returnedId)).to.eql(String(savedId));\r\n    }\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/menu/{{menu_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "menu",
+            "{{menu_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT Menu By Id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code adalah 200 (Updated Success)\", function () {\r\n    pm.response.to.have.status(200);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Mie Kuah Bakso\",\r\n    \"description\": \"Mie Kuah Bakso\",\r\n    \"price\": 5000,\r\n    \"is_available\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/menu/{{menu_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "menu",
+            "{{menu_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET ALL MENU",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code adalah 200 (Success)\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Respons berupa array\", function () {\r\n    var jsonData = pm.response.json();\r\n    pm.expect(jsonData).to.be.an('array');\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/menu",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "menu"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete by Id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code adalah 200 atau 204 (Deleted Success)\", function () {\r\n    pm.expect(pm.response.code).to.be.oneOf([200, 204]);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/menu/{{menu_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "menu",
+            "{{menu_id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "menu_id",
+      "value": ""
+    }
+  ]
+}
