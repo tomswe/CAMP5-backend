@@ -1,11 +1,16 @@
 import { Router } from 'express';
 import * as menuController from './menu.controller.js'
+import { log } from '../../middleware/log.middleware.js';
+
 const router = Router();
 
-
-router.get('/', menuController.getAllmenu)
+// log tidak dipanggil metode next()
+// request stuck tidak akan dilanjutkan ke middleware selanjutnya
+router.get('/', log, menuController.getAllmenu)
 
 router.get('/:id', menuController.getMenu)
+// Batasi agar user biasa tidak bisa buat menu baru
+// router.post('/', cekLogin, cekIsAdmin,menuController.createMenu);
 
 router.post('/', menuController.createMenu);
 
