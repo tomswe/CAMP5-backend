@@ -10,6 +10,8 @@ const router = Router();
 // request stuck tidak akan dilanjutkan ke middleware selanjutnya
 router.get('/', log, menuController.getAllmenu)
 
+router.get('/menu-paginate', menuController.getMenuWithPagination)
+
 router.get('/:id', menuController.getMenu)
 // Batasi agar user biasa tidak bisa buat menu baru
 // router.post('/', cekLogin, cekIsAdmin,menuController.createMenu);

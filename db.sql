@@ -28,3 +28,15 @@ CREATE TABLE refresh_tokens (
   expires_at TIMESTAMP NOT NULL,
   created_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE images (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  image_path TEXT NOT NULL,
+  image_url TEXT NOT NULL,
+  provider VARCHAR(30) NOT NULL,
+  provider_id TEXT,
+  original_name VARCHAR(255),
+  mime_type VARCHAR(100),
+  size INTEGER,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

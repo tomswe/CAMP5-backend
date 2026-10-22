@@ -54,3 +54,14 @@ export const deleteMenu = async (req, res) => {
         res.status(400).json({ message: error.message })
     }
 }
+export const getMenuWithPagination = async (req, res) => {
+    try {
+        const { page, limit } = menuValidation.paginationSchema.parse(req.query);
+
+        const result = await menuService.getMenusWithPagination(page, limit);
+
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
